@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO it Right Chat Widget v7 Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f8fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: #001d4c;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: #3da5ae;
+            font-size: 1.5rem;
+            font-weight: normal;
+            margin-top: 0;
+        }
+        
+        .logo {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        h3 {
+            color: #001d4c;
+            margin-top: 0;
+        }
+
+        pre {
+            background-color: #f1f5f9;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+        
+        .highlight {
+            background-color: #3da5ae;
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #3da5ae;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: #2c8e96;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5eb;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="https://seoitright.co.uk/wp-content/uploads/2024/12/SEO-it-Right-02-scaled.jpg" alt="SEO it Right Logo" class="logo">
+            <h1>SEO it Right Chat Widget</h1>
+            <h2>Version 7 Demo</h2>
+        </header>
+        
+        <div class="card">
+            <h3>About This Demo</h3>
+            <p>This page demonstrates the enhanced SEO it Right chat widget (v7). The widget includes:</p>
+            <ul>
+                <li>Professional styling with SEO it Right branding colors</li>
+                <li>Responsive design (works on mobile devices)</li>
+                <li>Smooth animations and transitions</li>
+                <li>Typing indicators</li>
+                <li>Integration with n8n webhooks</li>
+            </ul>
+            <p>Click the <span class="highlight">Chat with us</span> button in the bottom right corner to test the widget.</p>
+        </div>
+        
+        <div class="card">
+            <h3>Implementation Guide</h3>
+            <p>To add this chat widget to your website, simply include the following script tag before the closing <code>&lt;/body&gt;</code> tag:</p>
+            <pre>&lt;script src="https://cdn.jsdelivr.net/gh/adrazz-cyber/n8nchatwidget@main/chat-widget-v7.js"&gt;&lt;/script&gt;</pre>
+            <p><strong>Important:</strong> Before using on your website, you must open the script file and replace the placeholder webhook URL with your actual n8n webhook URL.</p>
+            <p>The widget is fully customizable by editing the configuration at the top of the JavaScript file.</p>
+        </div>
+        
+        <div class="card">
+            <h3>Configuration Options</h3>
+            <p>You can customize the widget by editing these settings in the JavaScript file:</p>
+            <ul>
+                <li><strong>webhook.url</strong> - Your n8n webhook URL</li>
+                <li><strong>webhook.responseField</strong> - Field that contains the bot response</li>
+                <li><strong>branding</strong> - Title, subtitle, logo, and name settings</li>
+                <li><strong>style</strong> - Colors, fonts, sizes, and positioning</li>
+                <li><strong>initialMessages</strong> - Messages shown when the chat first opens</li>
+            </ul>
+        </div>
+        
+        <a href="https://github.com/adrazz-cyber/n8nchatwidget" class="btn">View on GitHub</a>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 SEO it Right Ltd. All rights reserved.</p>
+    </footer>
+
+    <!-- Include the chat widget -->
+    <script src="chat-widget-v7-fixed.js"></script>
+</body>
+</html>

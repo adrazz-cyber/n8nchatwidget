@@ -6,6 +6,27 @@ A customizable chat widget for SEO it Right Ltd that integrates with n8n workflo
 
 This chat widget allows you to embed a customizable chatbot on your website that connects to n8n for processing messages. The widget is designed to be lightweight, easy to configure, and match your branding.
 
+## Latest Version: v7
+
+**Version 7 (Latest)** features:
+- Modern, professional UI with smooth animations
+- Enhanced mobile responsiveness
+- Typing indicators for better UX
+- Auto-expanding textarea for longer messages
+- Improved error handling and debug options
+- Uses XMLHttpRequest for better compatibility
+- Streamlined configuration options
+
+## Installation (v7)
+
+Simply include the latest version of the script in your website before the closing `</body>` tag:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/adrazz-cyber/n8nchatwidget@main/chat-widget-v7.js"></script>
+```
+
+No additional configuration is needed! The default settings are configured for SEO it Right, but you can customize by editing the config variables in the script.
+
 ## Features
 
 - Customizable colors and styling
@@ -13,10 +34,47 @@ This chat widget allows you to embed a customizable chatbot on your website that
 - Easy integration with n8n webhooks
 - Configurable welcome messages and branding
 - CDN delivery through GitHub and jsDelivr
+- Typing indicators and animations
+- Detailed error handling and debugging options
 
-## Installation
+## Configuration Options (v7)
 
-1. Include the script in your website:
+### Webhook
+
+- `webhook.url`: The URL to your n8n webhook
+- `webhook.responseField`: Field that contains the bot response (default: "reply")
+
+### Branding
+
+- `branding.title`: Main title shown in the header
+- `branding.subtitle`: Subtitle shown under the title
+- `branding.logo`: URL to your company logo
+- `branding.agentName`: Name shown for bot messages
+- `branding.userLabel`: Label shown for user messages
+
+### Style
+
+- `style.primaryColor`: Main color for buttons and headers
+- `style.secondaryColor`: Secondary color for gradients and accents
+- `style.textColor`: Text color for chat messages
+- `style.fontSize`: Base font size
+- `style.borderRadius`: Border radius for UI elements
+- `style.fontFamily`: Font family for the widget
+- `style.chatHeight`: Height of the chat messages area
+- `style.chatWidth`: Width of the chat container
+- `style.chatRight`: Distance from right edge
+- `style.chatBottom`: Distance from bottom edge
+- `style.buttonText`: Text shown on the chat button
+- Various icon settings for customization
+
+### Other Options
+
+- `initialMessages`: Array of messages shown when the chat opens
+- `debug`: Enable/disable console logging for debugging
+
+## Legacy Versions
+
+### Previous Installation Method (v1-v6)
 
 ```html
 <!-- Widget Configuration --> 
@@ -43,31 +101,6 @@ This chat widget allows you to embed a customizable chatbot on your website that
 </script>
 <script src="https://cdn.jsdelivr.net/gh/adrazz-cyber/n8nchatwidget@main/chat-widget.js"></script>
 ```
-
-2. Replace `YOUR_PRODUCTION_WEBHOOK_URL` with your actual n8n webhook URL.
-3. Customize the configuration to match your branding and needs.
-
-## Configuration Options
-
-### Webhook
-
-- `url`: The URL to your n8n webhook
-- `route`: Optional routing parameter for the webhook
-
-### Branding
-
-- `logo`: URL to your company logo
-- `name`: Your company or chat widget name
-- `welcomeText`: Initial message displayed in the chat
-- `responseTimeText`: Text displayed under the title to set expectations
-
-### Style
-
-- `primaryColor`: Main color for buttons and user messages
-- `secondaryColor`: Secondary color for hover states and accents
-- `position`: Position of the widget ('left' or 'right')
-- `backgroundColor`: Background color of the chat window
-- `fontColor`: Text color for the chat messages
 
 ## Development
 

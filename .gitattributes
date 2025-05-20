@@ -1,2 +1,15 @@
-# Auto detect text files and perform LF normalization
+# Set default behavior to automatically normalize line endings
 * text=auto
+
+# Explicitly declare text files to be normalized
+*.js text
+*.html text
+*.md text
+*.css text
+*.json text
+*.bat text
+
+# Binary files should not be modified
+*.png binary
+*.jpg binary
+*.ico binary
