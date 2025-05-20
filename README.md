@@ -12,6 +12,7 @@ This chat widget allows you to embed a customizable chatbot on your website that
 - Responsive design that works on all devices
 - Easy integration with n8n webhooks
 - Configurable welcome messages and branding
+- CDN delivery through GitHub and jsDelivr
 
 ## Installation
 
@@ -40,10 +41,11 @@ This chat widget allows you to embed a customizable chatbot on your website that
         }
     };
 </script>
-<script src="./chat-widget.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/adrazz-cyber/n8nchatwidget@main/chat-widget.js"></script>
 ```
 
-2. Customize the configuration to match your branding and needs.
+2. Replace `YOUR_PRODUCTION_WEBHOOK_URL` with your actual n8n webhook URL.
+3. Customize the configuration to match your branding and needs.
 
 ## Configuration Options
 
