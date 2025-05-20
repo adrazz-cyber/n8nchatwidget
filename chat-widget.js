@@ -29,6 +29,7 @@
         branding: { ...defaultConfig.branding, ...config.branding },
         style: { ...defaultConfig.style, ...config.style }
     };
+
     // Create CSS styles
     const createStyles = () => {
         const style = document.createElement('style');
@@ -166,10 +167,7 @@
                 border-bottom-right-radius: 5px;
                 align-self: flex-end;
             }
-        `;
-        document.head.appendChild(style);
-    };
-    
+            
             .chat-widget-input-container {
                 padding: 15px;
                 border-top: 1px solid #e0e0e0;
@@ -373,6 +371,9 @@
         elements.messages.scrollTop = elements.messages.scrollHeight;
     };
     
+    // Store elements
+    let elements = {};
+    
     // Initialize the widget
     const init = () => {
         createStyles();
@@ -385,7 +386,4 @@
     } else {
         init();
     }
-    
-    // Store elements
-    let elements = {};
 })();
