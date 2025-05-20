@@ -16,7 +16,8 @@
         var defaultConfig = {
             webhook: {
                 url: '',
-                route: 'general'
+                route: 'general',
+                cors: 'cors' // Can be 'cors', 'no-cors', or 'same-origin'
             },
             branding: {
                 logo: '',
@@ -40,7 +41,8 @@
         var config = {
             webhook: {
                 url: userConfig.webhook && userConfig.webhook.url ? userConfig.webhook.url : defaultConfig.webhook.url,
-                route: userConfig.webhook && userConfig.webhook.route ? userConfig.webhook.route : defaultConfig.webhook.route
+                route: userConfig.webhook && userConfig.webhook.route ? userConfig.webhook.route : defaultConfig.webhook.route,
+                cors: userConfig.webhook && userConfig.webhook.cors ? userConfig.webhook.cors : defaultConfig.webhook.cors
             },
             branding: {
                 logo: userConfig.branding && userConfig.branding.logo ? userConfig.branding.logo : defaultConfig.branding.logo,
@@ -434,36 +436,70 @@
         
         // Send to webhook
         if (config.webhook.url) {
+            console.log("Sending message to webhook:", config.webhook.url);
+            
             // Create message payload
             var payload = {
                 message: text,
                 route: config.webhook.route
             };
             
+            // Add a temporary message indicating we're waiting for response
+            var loadingMsgEl = document.createElement('div');
+            loadingMsgEl.className = 'seo-chat-message bot';
+            loadingMsgEl.textContent = 'Typing...';
+            elements.messages.appendChild(loadingMsgEl);
+            
+            // Scroll to bottom
+            elements.messages.scrollTop = elements.messages.scrollHeight;
+            
             // Send to webhook
             fetch(config.webhook.url, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
+                mode: config.webhook.cors, // Use the configured CORS mode
+                credentials: 'same-origin',
                 body: JSON.stringify(payload)
             })
             .then(function(response) {
+                console.log("Webhook response status:", response.status);
+                
+                // Remove loading message
+                elements.messages.removeChild(loadingMsgEl);
+                
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    console.error("Error response:", response);
+                    throw new Error('Network response was not ok: ' + response.status);
                 }
-                return response.json();
+                
+                return response.json().catch(function(error) {
+                    console.error("JSON parsing error:", error);
+                    throw new Error('Invalid JSON response from webhook');
+                });
             })
             .then(function(data) {
+                console.log("Webhook response data:", data);
+                
                 if (data && data.message) {
                     addChatMessage(elements, data.message, 'bot');
                 } else {
-                    addChatMessage(elements, 'Sorry, I encountered an error processing your request.', 'bot');
+                    console.error("No message in response data:", data);
+                    addChatMessage(elements, 'Sorry, I received an invalid response from the server. Please check the n8n webhook configuration.', 'bot');
                 }
             })
             .catch(function(error) {
                 console.error('Error sending message:', error);
-                addChatMessage(elements, 'Sorry, I encountered an error. Please try again later.', 'bot');
+                addChatMessage(elements, 'Error connecting to webhook: ' + error.message, 'bot');
+                
+                // Add troubleshooting info
+                var troubleshoot = "Troubleshooting: Check the browser console for more details. Verify the webhook URL is correct and that CORS is properly configured on the n8n server.";
+                
+                setTimeout(function() {
+                    addChatMessage(elements, troubleshoot, 'bot');
+                }, 1000);
             });
         } else {
             // No webhook URL configured
