@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct n8n Webhook Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #3da5ae;
+        }
+        .panel {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        textarea {
+            height: 100px;
+        }
+        button {
+            background-color: #3da5ae;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .output {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Direct n8n Webhook Test</h1>
+    
+    <div class="panel">
+        <label for="webhookUrl">Webhook URL:</label>
+        <input type="text" id="webhookUrl" value="https://n8n.srv833885.hstgr.cloud/webhook/b585c3ef-a838-4d84-b0c9-3f267675627e/chat">
+        
+        <label for="messageText">Message:</label>
+        <input type="text" id="messageText" value="Test message from direct tester">
+        
+        <label for="routeValue">Route:</label>
+        <input type="text" id="routeValue" value="general">
+        
+        <div>
+            <button onclick="testXHR()">Test with XMLHttpRequest</button>
+            <button onclick="testFetch()">Test with Fetch API</button>
+            <button onclick="testForm()">Test with Form Submit</button>
+        </div>
+    </div>
+    
+    <h2>Response Output:</h2>
+    <div id="output" class="output">Results will appear here...</div>
+    
+    <script>
+        // Function to log output
+        function log(message) {
+            var output = document.getElementById('output');
+            var timestamp = new Date().toLocaleTimeString();
+            output.innerHTML += '[' + timestamp + '] ' + message + '\n';
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        // Test with XMLHttpRequest
+        function testXHR() {
+            var webhookUrl = document.getElementById('webhookUrl').value.trim();
+            var messageText = document.getElementById('messageText').value.trim();
+            var routeValue = document.getElementById('routeValue').value.trim();
+            
+            log('Testing with XMLHttpRequest...');
+            log('URL: ' + webhookUrl);
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', webhookUrl, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            
+            xhr.onload = function() {
+                log('Response Status: ' + xhr.status);
+                log('Response Headers: ' + xhr.getAllResponseHeaders());
+                log('Response Text: ' + xhr.responseText);
+                
+                try {
+                    var jsonResponse = JSON.parse(xhr.responseText);
+                    log('Parsed JSON: ' + JSON.stringify(jsonResponse, null, 2));
+                } catch (e) {
+                    log('Not valid JSON: ' + e.message);
+                }
+            };
+            
+            xhr.onerror = function() {
+                log('XHR Error occurred. Check the console for details.');
+                console.error('XHR Error:', xhr);
+            };
+            
+            var data = JSON.stringify({
+                message: messageText,
+                route: routeValue
+            });
+            
+            log('Sending payload: ' + data);
+            
+            xhr.send(data);
+        }
+        
+        // Test with Fetch API
+        function testFetch() {
+            var webhookUrl = document.getElementById('webhookUrl').value.trim();
+            var messageText = document.getElementById('messageText').value.trim();
+            var routeValue = document.getElementById('routeValue').value.trim();
+            
+            log('Testing with Fetch API...');
+            log('URL: ' + webhookUrl);
+            
+            var data = {
+                message: messageText,
+                route: routeValue
+            };
+            
+            log('Sending payload: ' + JSON.stringify(data));
+            
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(function(response) {
+                log('Response Status: ' + response.status);
+                
+                // Convert response headers to a readable format
+                var headers = {};
+                response.headers.forEach(function(value, name) {
+                    headers[name] = value;
+                });
+                log('Response Headers: ' + JSON.stringify(headers, null, 2));
+                
+                return response.text();
+            })
+            .then(function(text) {
+                log('Response Text: ' + text);
+                
+                try {
+                    var jsonResponse = JSON.parse(text);
+                    log('Parsed JSON: ' + JSON.stringify(jsonResponse, null, 2));
+                } catch (e) {
+                    log('Not valid JSON: ' + e.message);
+                }
+            })
+            .catch(function(error) {
+                log('Fetch Error: ' + error.message);
+                console.error('Fetch Error:', error);
+            });
+        }
+        
+        // Test with Form Submit (iframe method)
+        function testForm() {
+            var webhookUrl = document.getElementById('webhookUrl').value.trim();
+            var messageText = document.getElementById('messageText').value.trim();
+            var routeValue = document.getElementById('routeValue').value.trim();
+            
+            log('Testing with Form Submit...');
+            log('URL: ' + webhookUrl);
+            
+            // Create a form element
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = webhookUrl;
+            form.target = 'responseFrame';
+            form.style.display = 'none';
+            
+            // Add message field
+            var messageField = document.createElement('input');
+            messageField.type = 'text';
+            messageField.name = 'message';
+            messageField.value = messageText;
+            form.appendChild(messageField);
+            
+            // Add route field
+            var routeField = document.createElement('input');
+            routeField.type = 'text';
+            routeField.name = 'route';
+            routeField.value = routeValue;
+            form.appendChild(routeField);
+            
+            // Create iframe to receive the response
+            var iframe = document.createElement('iframe');
+            iframe.name = 'responseFrame';
+            iframe.style.display = 'none';
+            
+            // Handle iframe load event
+            iframe.onload = function() {
+                try {
+                    var iframeContent = iframe.contentWindow.document.body.innerHTML;
+                    log('Form Response: ' + iframeContent);
+                } catch (e) {
+                    log('Cannot access iframe content due to same-origin policy: ' + e.message);
+                }
+                
+                // Clean up
+                document.body.removeChild(form);
+                document.body.removeChild(iframe);
+            };
+            
+            // Add to document and submit
+            document.body.appendChild(form);
+            document.body.appendChild(iframe);
+            
+            log('Submitting form...');
+            form.submit();
+        }
+    </script>
+</body>
+</html>
