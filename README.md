@@ -22,7 +22,7 @@ This chat widget allows you to embed a customizable chatbot on your website that
 <script>
     window.ChatWidgetConfig = {
         webhook: {
-            url: 'https://n8n.srv833885.hstgr.cloud/webhook/b585c3ef-a838-4d84-b0c9-3f267675627e/chat',
+            url: 'YOUR_PRODUCTION_WEBHOOK_URL',
             route: 'general'
         },
         branding: {
