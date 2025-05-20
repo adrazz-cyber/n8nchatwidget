@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO it Right Chat Widget Demo</title>
+    <style>
+        :root {
+            --primary-color: #3da5ae;
+            --secondary-color: #001d4c;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        
+        .header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .logo span {
+            color: var(--primary-color);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        h1, h2 {
+            color: var(--secondary-color);
+        }
+        
+        .primary-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .primary-btn:hover {
+            background-color: #2b8a92;
+        }
+        
+        .code-block {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        
+        .feature-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-list li:before {
+            content: "✓";
+            color: var(--primary-color);
+            margin-right: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">SEO it <span>Right</span> Chat Widget</div>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <h1>Easy Chat Integration for Your Website</h1>
+            <p>Add a fully functional chat widget to your website in minutes. Connect it to your n8n workflows for powerful automation.</p>
+            
+            <h2>Quick Implementation</h2>
+            <div class="code-block">&lt;!-- SEO it Right Chat Widget Configuration --&gt;
+&lt;script&gt;
+    window.SEOitRightChatConfig = {
+        webhookUrl: 'YOUR_WEBHOOK_URL_HERE',
+        colors: {
+            primary: '#3da5ae',
+            secondary: '#001d4c',
+        }
+    };
+&lt;/script&gt;
+
+&lt;!-- SEO it Right Chat Widget --&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/adrazz-cyber/n8nchatwidget@main/seo-it-right-chat.js"&gt;&lt;/script&gt;</div>
+            
+            <button class="primary-btn" onclick="location.href='improved-config-checker.html'">Check Your Configuration</button>
+        </div>
+        
+        <div class="card">
+            <h2>Key Features</h2>
+            <ul class="feature-list">
+                <li>Simple integration with just a few lines of code</li>
+                <li>Fully customizable to match your brand colors</li>
+                <li>Mobile-responsive design works on all devices</li>
+                <li>Configurable welcome messages and branding</li>
+                <li>Connects directly to your n8n workflows</li>
+                <li>CDN delivery for fast loading</li>
+                <li>No dependencies or third-party libraries required</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2>Troubleshooting Tools</h2>
+            <p>Having trouble? Use our diagnostic tools:</p>
+            <ul>
+                <li><a href="improved-webhook-test.html">Webhook Test Tool</a> - Test communication with your n8n webhook</li>
+                <li><a href="improved-config-checker.html">Configuration Checker</a> - Check for CORS and format issues</li>
+                <li><a href="official-n8n-chat-test.html">Official n8n Chat Test</a> - Test the official n8n chat implementation</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SEO it Right Chat Widget Configuration -->
+    <script>
+        window.SEOitRightChatConfig = {
+            webhookUrl: 'YOUR_WEBHOOK_URL_HERE',
+            colors: {
+                primary: '#3da5ae',
+                secondary: '#001d4c',
+            }
+        };
+    </script>
+    
+    <!-- SEO it Right Chat Widget -->
+    <script src="seo-it-right-chat.js"></script>
+</body>
+</html>

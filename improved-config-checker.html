@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n Webhook Configuration Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .panel {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .response {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+        .info {
+            color: blue;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #3da5ae;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2b8a92;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .request-options {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>n8n Webhook Configuration Checker</h1>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>Webhook Configuration</h2>
+            <div>
+                <label for="webhookUrl">Webhook URL:</label>
+                <input type="text" id="webhookUrl" value="YOUR_WEBHOOK_URL_HERE">
+            </div>
+            
+            <h3>1. Basic CORS Check</h3>
+            <p>This will perform a preflight OPTIONS request to check CORS configuration</p>
+            <button id="checkCORS">Check CORS Configuration</button>
+            <div id="corsResult" class="response">No check performed yet</div>
+            
+            <h3>2. Communication Test</h3>
+            <div class="request-options">
+                <label>
+                    <input type="radio" name="requestFormat" value="formData" checked> 
+                    Send as FormData (recommended by n8n docs)
+                </label>
+                <br>
+                <label>
+                    <input type="radio" name="requestFormat" value="json"> 
+                    Send as JSON
+                </label>
+            </div>
+            <button id="testCommunication">Test Communication</button>
+            <div id="communicationResult" class="response">No test performed yet</div>
+            
+            <h3>3. Response Format Check</h3>
+            <p>This checks if the webhook response matches the expected format required by the n8n chat widget</p>
+            <button id="checkResponseFormat">Check Response Format</button>
+            <div id="formatResult" class="response">No check performed yet</div>
+        </div>
+        
+        <div class="panel">
+            <h2>Common Issues and Solutions</h2>
+            <table>
+                <tr>
+                    <th>Issue</th>
+                    <th>Solution</th>
+                </tr>
+                <tr>
+                    <td>CORS errors</td>
+                    <td>Make sure your domain is added to the "Allowed Origins (CORS)" field in the Chat Trigger node settings.</td>
+                </tr>
+                <tr>
+                    <td>500 Server Errors</td>
+                    <td>Check your n8n workflow for errors. Look at the execution history in n8n to see what's failing.</td>
+                </tr>
+                <tr>
+                    <td>Wrong response format</td>
+                    <td>The n8n chat widget expects a specific JSON format. Make sure your workflow returns: <code>{ "message": "Your response text" }</code></td>
+                </tr>
+                <tr>
+                    <td>Missing action parameter</td>
+                    <td>Every request to the webhook must include the <code>action</code> query parameter (e.g., <code>?action=sendMessage</code>)</td>
+                </tr>
+                <tr>
+                    <td>Incorrect request format</td>
+                    <td>Try using FormData format instead of JSON as mentioned in the docs.</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Check CORS configuration
+        document.getElementById('checkCORS').addEventListener('click', async () => {
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            const resultElement = document.getElementById('corsResult');
+            
+            resultElement.textContent = 'Checking CORS configuration...';
+            resultElement.className = 'response';
+            
+            try {
+                // Send OPTIONS request to check CORS
+                const response = await fetch(webhookUrl, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin,
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+                
+                // Check CORS headers
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                };
+                
+                let corsStatus = 'FAIL';
+                let details = [];
+                
+                // Check if CORS is properly configured
+                if (corsHeaders['Access-Control-Allow-Origin'] === '*' || 
+                    corsHeaders['Access-Control-Allow-Origin'] === window.location.origin) {
+                    details.push('✅ Access-Control-Allow-Origin is correctly configured');
+                    if (corsHeaders['Access-Control-Allow-Methods'] && 
+                        corsHeaders['Access-Control-Allow-Methods'].includes('POST')) {
+                        details.push('✅ Access-Control-Allow-Methods includes POST');
+                        if (corsHeaders['Access-Control-Allow-Headers'] && 
+                            corsHeaders['Access-Control-Allow-Headers'].includes('Content-Type')) {
+                            details.push('✅ Access-Control-Allow-Headers includes Content-Type');
+                            corsStatus = 'PASS';
+                        } else {
+                            details.push('❌ Access-Control-Allow-Headers does not include Content-Type');
+                        }
+                    } else {
+                        details.push('❌ Access-Control-Allow-Methods does not include POST');
+                    }
+                } else {
+                    details.push('❌ Access-Control-Allow-Origin is not correctly configured');
+                }
+                
+                // Display result
+                resultElement.innerHTML = `<span class="${corsStatus === 'PASS' ? 'success' : 'error'}">${corsStatus}: CORS Configuration</span>\n\n` +
+                    details.join('\n') + '\n\n' +
+                    'Headers received:\n' + 
+                    Object.entries(corsHeaders)
+                        .map(([key, value]) => `${key}: ${value || 'not present'}`)
+                        .join('\n');
+                
+            } catch (error) {
+                resultElement.innerHTML = `<span class="error">ERROR: Could not check CORS</span>\n\n${error.message}`;
+            }
+        });
+        
+        // Test communication
+        document.getElementById('testCommunication').addEventListener('click', async () => {
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            const resultElement = document.getElementById('communicationResult');
+            const requestFormat = document.querySelector('input[name="requestFormat"]:checked').value;
+            
+            resultElement.textContent = 'Testing communication...';
+            resultElement.className = 'response';
+            
+            try {
+                const testMessage = "Test message from configuration checker";
+                const sessionId = "test-session-" + Date.now();
+                let response;
+                
+                if (requestFormat === 'formData') {
+                    // Use FormData format
+                    const formData = new FormData();
+                    formData.append('chatInput', testMessage);
+                    formData.append('sessionId', sessionId);
+                    
+                    response = await fetch(`${webhookUrl}?action=sendMessage`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                } else {
+                    // Use JSON format
+                    response = await fetch(`${webhookUrl}?action=sendMessage`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            chatInput: testMessage,
+                            sessionId: sessionId
+                        })
+                    });
+                }
+                
+                // Check response status
+                if (response.ok) {
+                    const responseData = await response.text();
+                    let jsonData;
+                    try {
+                        jsonData = JSON.parse(responseData);
+                        resultElement.innerHTML = `<span class="success">SUCCESS: Communication test passed</span>\n\n` +
+                            `Status: ${response.status}\n\n` +
+                            `Response:\n${JSON.stringify(jsonData, null, 2)}`;
+                    } catch (e) {
+                        resultElement.innerHTML = `<span class="info">WARNING: Response is not valid JSON</span>\n\n` +
+                            `Status: ${response.status}\n\n` +
+                            `Response:\n${responseData}`;
+                    }
+                } else {
+                    resultElement.innerHTML = `<span class="error">FAIL: Received error status ${response.status}</span>\n\n` +
+                        `Response:\n${await response.text()}`;
+                }
+            } catch (error) {
+                resultElement.innerHTML = `<span class="error">ERROR: Communication test failed</span>\n\n${error.message}`;
+            }
+        });
+        
+        // Check response format
+        document.getElementById('checkResponseFormat').addEventListener('click', async () => {
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            const resultElement = document.getElementById('formatResult');
+            
+            resultElement.textContent = 'Checking response format...';
+            resultElement.className = 'response';
+            
+            try {
+                // Send a test message
+                const formData = new FormData();
+                formData.append('chatInput', 'format check test');
+                
+                const response = await fetch(`${webhookUrl}?action=sendMessage`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                // Get response text
+                const responseText = await response.text();
+                let responseData;
+                
+                try {
+                    // Try to parse as JSON
+                    responseData = JSON.parse(responseText);
+                    
+                    // Check if response has the expected format
+                    if (responseData.hasOwnProperty('message')) {
+                        resultElement.innerHTML = `<span class="success">PASS: Response format is correct</span>\n\n` +
+                            `The webhook returns the expected format { "message": "..." }\n\n` +
+                            `Response:\n${JSON.stringify(responseData, null, 2)}`;
+                    } else {
+                        resultElement.innerHTML = `<span class="error">FAIL: Response format is incorrect</span>\n\n` +
+                            `The webhook response does not contain a "message" field as required by n8n chat widget.\n\n` +
+                            `Expected format: { "message": "Response text" }\n\n` +
+                            `Actual response:\n${JSON.stringify(responseData, null, 2)}`;
+                    }
+                } catch (e) {
+                    resultElement.innerHTML = `<span class="error">FAIL: Response is not valid JSON</span>\n\n` +
+                        `The webhook must return valid JSON with a "message" field.\n\n` +
+                        `Response received:\n${responseText}`;
+                }
+            } catch (error) {
+                resultElement.innerHTML = `<span class="error">ERROR: Format check failed</span>\n\n${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

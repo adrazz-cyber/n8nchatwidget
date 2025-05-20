@@ -3,84 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEO it Right Ltd - Chat Widget</title>
+    <title>n8n Chat Widget Demo</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: #f9f9f9;
         }
+        
         .container {
             max-width: 800px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        
         h1, h2 {
             color: #3da5ae;
         }
-        .secondary-color {
-            color: #001d4c;
-        }
-        pre {
-            background-color: #f9f9f9;
+        
+        .code-block {
+            background-color: #f5f5f5;
             padding: 15px;
             border-radius: 5px;
             overflow-x: auto;
+            font-family: monospace;
+            margin: 20px 0;
         }
-        .logo {
-            max-width: 200px;
-            margin-bottom: 20px;
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .note {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="https://seoitright.co.uk/wp-content/uploads/2024/12/SEO-it-Right-02-scaled.jpg" alt="SEO it Right Ltd Logo" class="logo">
-        <h1>SEO it Right Ltd Chat Widget</h1>
-        <p>This page demonstrates the SEO it Right Ltd chat widget. Click on the chat icon in the bottom corner to test it.</p>
+        <h1>n8n Chat Widget Demo</h1>
+        <p>This page demonstrates a customizable chat widget that connects to n8n webhooks.</p>
         
-        <h2>Widget Configuration</h2>
-        <pre><code>
-<!-- Widget Configuration --> 
+        <div class="section">
+            <h2>Widget Configuration</h2>
+            <p>The chat widget is configured with the following settings:</p>
+            
+            <div class="code-block">
+<pre>window.ChatWidgetConfig = {
+    webhook: {
+        url: 'YOUR_N8N_WEBHOOK_URL',
+        route: 'general'
+    },
+    branding: {
+        logo: 'https://seoitright.co.uk/wp-content/uploads/2024/12/SEO-it-Right-02-scaled.jpg',
+        name: 'SEO it Right',
+        welcomeText: 'Hi 👋, how can we help with your SEO needs today?',
+        responseTimeText: 'We typically respond right away'
+    },
+    style: {
+        primaryColor: '#3da5ae',
+        secondaryColor: '#001d4c',
+        position: 'right',
+        backgroundColor: '#ffffff',
+        fontColor: '#333333'
+    }
+};</pre>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Installation</h2>
+            <p>To add this chat widget to your website, simply include the following code:</p>
+            
+            <div class="code-block">
+<pre>&lt;!-- Widget Configuration --&gt;
 &lt;script&gt;
     window.ChatWidgetConfig = {
         webhook: {
-            url: 'YOUR_PRODUCTION_WEBHOOK_URL',
+            url: 'YOUR_N8N_WEBHOOK_URL',
             route: 'general'
         },
         branding: {
-            logo: 'https://seoitright.co.uk/wp-content/uploads/2024/12/SEO-it-Right-02-scaled.jpg',
-            name: 'SEO it Right Ltd',
-            welcomeText: 'Hi 👋, how can we help with your SEO needs today?',
-            responseTimeText: 'We typically respond right away'
+            logo: 'YOUR_LOGO_URL',
+            name: 'YOUR_COMPANY_NAME',
+            welcomeText: 'YOUR_WELCOME_MESSAGE',
+            responseTimeText: 'YOUR_RESPONSE_TIME_TEXT'
         },
         style: {
-            primaryColor: '#3da5ae',
-            secondaryColor: '#001d4c',
-            position: 'right',
+            primaryColor: '#YOUR_PRIMARY_COLOR',
+            secondaryColor: '#YOUR_SECONDARY_COLOR',
+            position: 'right', // or 'left'
             backgroundColor: '#ffffff',
             fontColor: '#333333'
         }
     };
 &lt;/script&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/adrazz-cyber/n8nchatwidget@main/chat-widget.js"&gt;&lt;/script&gt;
-        </code></pre>
+&lt;script src="https://cdn.jsdelivr.net/gh/adrazz-cyber/n8nchatwidget@main/chat-widget.js"&gt;&lt;/script&gt;</pre>
+            </div>
+        </div>
+        
+        <div class="note">
+            <h3>Important Notes:</h3>
+            <ul>
+                <li>Make sure to replace <code>YOUR_N8N_WEBHOOK_URL</code> with your actual n8n webhook URL.</li>
+                <li>The webhook response should be in the format <code>{ "message": "Response text" }</code>.</li>
+                <li>Configure your n8n workflow to accept a POST request with the JSON payload.</li>
+            </ul>
+        </div>
     </div>
 
-    <!-- Widget Configuration --> 
+    <!-- Widget Configuration -->
     <script>
         window.ChatWidgetConfig = {
             webhook: {
-                url: 'https://n8n.srv833885.hstgr.cloud/webhook/b585c3ef-a838-4d84-b0c9-3f267675627e/chat',
+                url: 'YOUR_N8N_WEBHOOK_URL',
                 route: 'general'
             },
             branding: {
                 logo: 'https://seoitright.co.uk/wp-content/uploads/2024/12/SEO-it-Right-02-scaled.jpg',
-                name: 'SEO it Right Ltd',
+                name: 'SEO it Right',
                 welcomeText: 'Hi 👋, how can we help with your SEO needs today?',
                 responseTimeText: 'We typically respond right away'
             },
@@ -93,6 +141,6 @@
             }
         };
     </script>
-    <script src="https://cdn.jsdelivr.net/gh/adrazz-cyber/n8nchatwidget@main/chat-widget.js"></script>
+    <script src="chat-widget.js"></script>
 </body>
 </html>

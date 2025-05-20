@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n Webhook Test Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .test-panel {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .response {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .error {
+            color: red;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #3da5ae;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2b8a92;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>n8n Webhook Test Tool</h1>
+    
+    <div class="container">
+        <div class="test-panel">
+            <h2>1. Basic n8n Chat Send Message Test</h2>
+            <p>Tests sending a message using FormData format with action=sendMessage</p>
+            
+            <div>
+                <label for="webhookUrl">Webhook URL:</label>
+                <input type="text" id="webhookUrl" value="YOUR_WEBHOOK_URL_HERE" style="width: 100%;">
+            </div>
+            
+            <div>
+                <label for="chatInput">Message:</label>
+                <input type="text" id="chatInput" value="Hello from test tool!">
+            </div>
+            
+            <div>
+                <label for="sessionId">Session ID (optional):</label>
+                <input type="text" id="sessionId" value="">
+            </div>
+            
+            <button id="sendFormDataTest">Test FormData Format</button>
+            <button id="sendJSONTest">Test JSON Format</button>
+            
+            <h3>Response:</h3>
+            <div id="formDataResponse" class="response">No response yet</div>
+        </div>
+        
+        <div class="test-panel">
+            <h2>2. Raw Request Test</h2>
+            <p>Send a custom request with your own payload and headers</p>
+            
+            <div>
+                <label for="customUrl">Webhook URL:</label>
+                <input type="text" id="customUrl" value="YOUR_WEBHOOK_URL_HERE?action=sendMessage" style="width: 100%;">
+            </div>
+            
+            <div>
+                <label for="requestMethod">Method:</label>
+                <select id="requestMethod">
+                    <option value="POST">POST</option>
+                    <option value="GET">GET</option>
+                </select>
+            </div>
+            
+            <div>
+                <label for="requestHeaders">Headers (JSON format):</label>
+                <textarea id="requestHeaders" rows="3">{
+  "Content-Type": "application/json"
+}</textarea>
+            </div>
+            
+            <div>
+                <label for="requestBody">Body (JSON or string):</label>
+                <textarea id="requestBody" rows="5">{
+  "chatInput": "Test message",
+  "sessionId": "test-session-123"
+}</textarea>
+            </div>
+            
+            <button id="sendCustomRequest">Send Custom Request</button>
+            
+            <h3>Response:</h3>
+            <div id="customResponse" class="response">No response yet</div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('sendFormDataTest').addEventListener('click', async () => {
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            const chatInput = document.getElementById('chatInput').value;
+            const sessionId = document.getElementById('sessionId').value;
+            const responseElement = document.getElementById('formDataResponse');
+            
+            responseElement.textContent = 'Sending request...';
+            responseElement.className = 'response';
+            
+            try {
+                // Create FormData
+                const formData = new FormData();
+                formData.append('chatInput', chatInput);
+                if (sessionId) {
+                    formData.append('sessionId', sessionId);
+                }
+                
+                // Send as FormData
+                const response = await fetch(`${webhookUrl}?action=sendMessage`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.text();
+                try {
+                    // Try to parse as JSON for pretty display
+                    const jsonData = JSON.parse(data);
+                    responseElement.textContent = `Status: ${response.status}\n\n${JSON.stringify(jsonData, null, 2)}`;
+                } catch {
+                    // If not JSON, display as text
+                    responseElement.textContent = `Status: ${response.status}\n\n${data}`;
+                }
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+                responseElement.className = 'response error';
+            }
+        });
+        
+        document.getElementById('sendJSONTest').addEventListener('click', async () => {
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            const chatInput = document.getElementById('chatInput').value;
+            const sessionId = document.getElementById('sessionId').value;
+            const responseElement = document.getElementById('formDataResponse');
+            
+            responseElement.textContent = 'Sending request...';
+            responseElement.className = 'response';
+            
+            try {
+                // Prepare JSON payload
+                const payload = {
+                    chatInput: chatInput
+                };
+                
+                if (sessionId) {
+                    payload.sessionId = sessionId;
+                }
+                
+                // Send as JSON
+                const response = await fetch(`${webhookUrl}?action=sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.text();
+                try {
+                    // Try to parse as JSON for pretty display
+                    const jsonData = JSON.parse(data);
+                    responseElement.textContent = `Status: ${response.status}\n\n${JSON.stringify(jsonData, null, 2)}`;
+                } catch {
+                    // If not JSON, display as text
+                    responseElement.textContent = `Status: ${response.status}\n\n${data}`;
+                }
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+                responseElement.className = 'response error';
+            }
+        });
+        
+        document.getElementById('sendCustomRequest').addEventListener('click', async () => {
+            const url = document.getElementById('customUrl').value;
+            const method = document.getElementById('requestMethod').value;
+            const headersText = document.getElementById('requestHeaders').value;
+            const bodyText = document.getElementById('requestBody').value;
+            const responseElement = document.getElementById('customResponse');
+            
+            responseElement.textContent = 'Sending request...';
+            responseElement.className = 'response';
+            
+            try {
+                // Parse headers
+                let headers = {};
+                try {
+                    headers = JSON.parse(headersText);
+                } catch (e) {
+                    throw new Error('Invalid headers JSON format');
+                }
+                
+                // Prepare request options
+                const options = {
+                    method: method,
+                    headers: headers
+                };
+                
+                // Add body for POST requests
+                if (method === 'POST' && bodyText.trim()) {
+                    // Try to parse as JSON, otherwise send as text
+                    try {
+                        const jsonBody = JSON.parse(bodyText);
+                        options.body = JSON.stringify(jsonBody);
+                    } catch {
+                        options.body = bodyText;
+                    }
+                }
+                
+                // Send request
+                const response = await fetch(url, options);
+                
+                const data = await response.text();
+                try {
+                    // Try to parse as JSON for pretty display
+                    const jsonData = JSON.parse(data);
+                    responseElement.textContent = `Status: ${response.status}\n\n${JSON.stringify(jsonData, null, 2)}`;
+                } catch {
+                    // If not JSON, display as text
+                    responseElement.textContent = `Status: ${response.status}\n\n${data}`;
+                }
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+                responseElement.className = 'response error';
+            }
+        });
+    </script>
+</body>
+</html>
