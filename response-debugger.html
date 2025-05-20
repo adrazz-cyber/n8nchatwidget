@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n Webhook Response Debugger</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #3da5ae;
+        }
+        .code-block {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+        .response-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            min-height: 100px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        button {
+            background-color: #3da5ae;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .output {
+            font-family: monospace;
+            white-space: pre-wrap;
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { color: #a6e22e; }
+        .error { color: #f92672; }
+        .info { color: #66d9ef; }
+        .steps {
+            margin-top: 20px;
+            border-left: 3px solid #3da5ae;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>n8n Webhook Response Debugger</h1>
+    <p>This tool helps diagnose issues with n8n webhook responses and shows exactly what's happening with both the request and response.</p>
+    
+    <div class="container">
+        <h2>Test Your Webhook</h2>
+        
+        <div>
+            <label for="webhookUrl">Webhook URL:</label>
+            <input type="text" id="webhookUrl" value="YOUR_WEBHOOK_URL_HERE" placeholder="https://your-n8n-instance.com/webhook/...">
+        </div>
+        
+        <div>
+            <label for="requestFormat">Request Format:</label>
+            <select id="requestFormat">
+                <option value="formData" selected>FormData (Recommended for n8n Chat)</option>
+                <option value="json">JSON</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="addAction">Add action parameter:</label>
+            <select id="addAction">
+                <option value="yes" selected>Yes (Add ?action=sendMessage)</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="chatInputKey">Chat Input Parameter Name:</label>
+            <input type="text" id="chatInputKey" value="chatInput" placeholder="Usually 'chatInput'">
+        </div>
+        
+        <div>
+            <label for="sessionIdKey">Session ID Parameter Name:</label>
+            <input type="text" id="sessionIdKey" value="sessionId" placeholder="Usually 'sessionId'">
+        </div>
+        
+        <div>
+            <label for="message">Test Message:</label>
+            <input type="text" id="message" value="Hello, this is a test message" placeholder="Enter a test message">
+        </div>
+        
+        <button id="testButton">Test Webhook</button>
+        
+        <div class="output" id="requestLog">Request details will appear here...</div>
+        <div class="output" id="responseLog">Response will appear here...</div>
+    </div>
+    
+    <div class="container">
+        <h2>Common Response Problems</h2>
+        
+        <div class="steps">
+            <p><strong>Problem 1: Invalid JSON Response</strong></p>
+            <p>The n8n webhook must return a valid JSON object with a "message" field. The correct format is:</p>
+            <div class="code-block">
+{
+  "message": "Your response text here"
+}
+            </div>
+            
+            <p><strong>Problem 2: Content Type Issues</strong></p>
+            <p>The n8n webhook must return a "Content-Type: application/json" header. If it returns plain text or HTML, the chat widget can't parse it as JSON.</p>
+            
+            <p><strong>Problem 3: n8n Workflow Error</strong></p>
+            <p>If your n8n workflow has an error, it might return a 200 status code but with an error message instead of the expected JSON format.</p>
+            
+            <p><strong>Problem 4: CORS Configuration</strong></p>
+            <p>The "Allowed Origins" field in your Chat Trigger node must include your website domain or "*" for testing.</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>Solutions</h2>
+        
+        <p>Based on common issues, try these fixes:</p>
+        
+        <ol>
+            <li>Make sure your n8n workflow's final node returns a JSON object with a "message" field</li>
+            <li>Check that your workflow executes successfully by testing it directly in n8n</li>
+            <li>Use a webhook testing tool like Postman to check the exact response format</li>
+            <li>Use the "Respond to Webhook" node as the final node in your workflow</li>
+            <li>In the "Respond to Webhook" node, set "Response Body" to the following expression:
+                <div class="code-block">
+{
+  "message": "Your response text here"
+}
+                </div>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        document.getElementById('testButton').addEventListener('click', function() {
+            const webhookUrl = document.getElementById('webhookUrl').value.trim();
+            const requestFormat = document.getElementById('requestFormat').value;
+            const addAction = document.getElementById('addAction').value === 'yes';
+            const chatInputKey = document.getElementById('chatInputKey').value.trim();
+            const sessionIdKey = document.getElementById('sessionIdKey').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            const requestLogEl = document.getElementById('requestLog');
+            const responseLogEl = document.getElementById('responseLog');
+            
+            if (!webhookUrl) {
+                requestLogEl.innerHTML = '<span class="error">Error: Please enter a webhook URL</span>';
+                return;
+            }
+            
+            if (!message) {
+                requestLogEl.innerHTML = '<span class="error">Error: Please enter a test message</span>';
+                return;
+            }
+            
+            // Prepare URL with action parameter if needed
+            let url = webhookUrl;
+            if (addAction) {
+                if (url.indexOf('?') === -1) {
+                    url += '?action=sendMessage';
+                } else {
+                    url += '&action=sendMessage';
+                }
+            }
+            
+            // Generate a session ID
+            const sessionId = 'test_session_' + Math.random().toString(36).substring(2, 15);
+            
+            // Display request details
+            requestLogEl.innerHTML = 
+                '<span class="info">Request URL:</span> ' + url + '\n' +
+                '<span class="info">Request Method:</span> POST\n' +
+                '<span class="info">Format:</span> ' + requestFormat + '\n' +
+                '<span class="info">Parameters:</span> ' + 
+                    chatInputKey + '="' + message + '", ' + 
+                    sessionIdKey + '="' + sessionId + '"\n\n' +
+                '<span class="info">Sending request...</span>';
+            
+            responseLogEl.innerHTML = '<span class="info">Waiting for response...</span>';
+            
+            // Send the request
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', url, true);
+            
+            if (requestFormat === 'json') {
+                xhr.setRequestHeader('Content-Type', 'application/json');
+            }
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    const status = xhr.status;
+                    const statusClass = status >= 200 && status < 300 ? 'success' : 'error';
+                    
+                    // Get response headers
+                    const headers = xhr.getAllResponseHeaders();
+                    const responseText = xhr.responseText;
+                    
+                    // Try to parse as JSON
+                    let jsonResponse = null;
+                    let jsonError = null;
+                    
+                    try {
+                        if (responseText) {
+                            jsonResponse = JSON.parse(responseText);
+                        }
+                    } catch (e) {
+                        jsonError = e.message;
+                    }
+                    
+                    // Build response log
+                    let responseLog = 
+                        '<span class="info">Status:</span> <span class="' + statusClass + '">' + status + '</span>\n\n' +
+                        '<span class="info">Response Headers:</span>\n' + formatHeaders(headers) + '\n\n' +
+                        '<span class="info">Response Body:</span>\n' + (responseText || '(empty)') + '\n\n';
+                    
+                    // Add JSON analysis
+                    if (jsonResponse) {
+                        responseLog += '<span class="info">JSON Analysis:</span>\n';
+                        
+                        // Check if it has a message field
+                        if (jsonResponse.hasOwnProperty('message')) {
+                            responseLog += '<span class="success">✓ Response contains message field: "' + jsonResponse.message + '"</span>\n';
+                        } else {
+                            responseLog += '<span class="error">✗ Response is missing the "message" field!</span>\n';
+                            
+                            // Suggest how to fix based on actual response
+                            responseLog += suggestFix(jsonResponse);
+                        }
+                    } else if (jsonError) {
+                        responseLog += 
+                            '<span class="info">JSON Parsing Error:</span>\n' +
+                            '<span class="error">✗ Could not parse response as JSON: ' + jsonError + '</span>\n\n' +
+                            '<span class="info">Suggestion:</span>\n' +
+                            'Make sure your n8n workflow returns valid JSON with a Content-Type: application/json header.\n' +
+                            'Use a "Respond to Webhook" node with Response Body set to: { "message": "Your text here" }';
+                    }
+                    
+                    responseLogEl.innerHTML = responseLog;
+                }
+            };
+            
+            // Handle errors
+            xhr.onerror = function() {
+                responseLogEl.innerHTML = 
+                    '<span class="error">Network Error!</span>\n' +
+                    'Could not connect to the webhook URL. Check the following:\n' +
+                    '- URL is correct and accessible\n' +
+                    '- No network issues or firewalls blocking the request\n' +
+                    '- CORS is properly configured on the n8n server';
+            };
+            
+            // Send request based on format
+            if (requestFormat === 'formData') {
+                const formData = new FormData();
+                formData.append(chatInputKey, message);
+                formData.append(sessionIdKey, sessionId);
+                xhr.send(formData);
+            } else {
+                // JSON format
+                const data = {};
+                data[chatInputKey] = message;
+                data[sessionIdKey] = sessionId;
+                xhr.send(JSON.stringify(data));
+            }
+        });
+        
+        // Helper to format headers
+        function formatHeaders(headers) {
+            if (!headers) return '(none)';
+            
+            return headers.split('\r\n')
+                .filter(line => line.trim())
+                .map(line => '  ' + line)
+                .join('\n');
+        }
+        
+        // Helper to suggest fixes based on the actual response
+        function suggestFix(response) {
+            let suggestions = '';
+            
+            // Check common alternative formats
+            if (response.hasOwnProperty('content')) {
+                suggestions += 'Response has a "content" field instead of "message". You can:\n' +
+                    '1. Rename to "message" in your n8n workflow, or\n' +
+                    '2. Update your chat widget to accept "content" by changing the chatInputKey config';
+            } else if (response.hasOwnProperty('text')) {
+                suggestions += 'Response has a "text" field instead of "message". You can:\n' +
+                    '1. Rename to "message" in your n8n workflow, or\n' +
+                    '2. Update your chat widget to accept "text"';
+            } else if (response.hasOwnProperty('response')) {
+                suggestions += 'Response has a "response" field instead of "message". You can:\n' +
+                    '1. Rename to "message" in your n8n workflow, or\n' +
+                    '2. Update your chat widget to accept "response"';
+            } else if (response.hasOwnProperty('data') && typeof response.data === 'object' && response.data !== null) {
+                // Response might be nested
+                if (response.data.hasOwnProperty('message')) {
+                    suggestions += 'Response has a nested "data.message" structure. Fix your n8n workflow to return { "message": "..." } directly.';
+                } else {
+                    suggestions += 'Response has a nested "data" object but no "message" field. Fix your n8n workflow to return { "message": "..." } directly.';
+                }
+            } else {
+                // Generic suggestion for unknown formats
+                suggestions += 'Response doesn\'t have any common alternative fields. Make sure your n8n workflow returns:\n' +
+                    '{\n  "message": "Your response text here"\n}';
+            }
+            
+            return suggestions;
+        }
+    </script>
+</body>
+</html>

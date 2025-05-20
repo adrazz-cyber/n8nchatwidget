@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO it Right Chat Widget v6.1 Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #3da5ae;
+        }
+        h2 {
+            color: #001d4c;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .important {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        .new-feature {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-left: 4px solid #4caf50;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SEO it Right Chat Widget v6.1</h1>
+        <p>This is a test of the enhanced chat widget that can handle multiple response formats from n8n.</p>
+        
+        <div class="new-feature">
+            <strong>New in v6.1:</strong>
+            <ul>
+                <li>Accepts multiple response formats: message, content, text, or response fields</li>
+                <li>Handles nested response structures like data.message</li>
+                <li>Fallback to plain text for non-JSON responses</li>
+                <li>Better error reporting and debugging</li>
+            </ul>
+        </div>
+        
+        <div class="important">
+            <strong>Important:</strong> This version is specifically designed to work with many different n8n response formats. It will try multiple approaches to extract a usable response.
+        </div>
+        
+        <h2>Configuration</h2>
+        <pre>
+window.ChatWidgetConfig = {
+    webhook: {
+        url: 'YOUR_WEBHOOK_URL',
+        chatInputKey: 'chatInput',     // Parameter name for input
+        sessionIdKey: 'sessionId',     // Parameter name for session
+        responseKeys: ['message', 'content', 'text', 'response']  // Try these keys in order
+    },
+    branding: {
+        logo: 'https://seoitright.co.uk/wp-content/uploads/2024/12/SEO-it-Right-02-scaled.jpg',
+        name: 'SEO it Right Chat',
+        welcomeText: 'Hi 👋, how can we help you today?'
+    },
+    style: {
+        primaryColor: '#3da5ae',
+        secondaryColor: '#001d4c',
+        position: 'right'
+    },
+    debug: true  // Set to true to see detailed logs
+};</pre>
+
+        <h2>Troubleshooting</h2>
+        <p>If you still have issues with the widget, use the <a href="response-debugger.html">Response Debugger</a> to see exactly what's happening with your webhook.</p>
+    </div>
+
+    <!-- Chat Widget Config -->
+    <script>
+        window.ChatWidgetConfig = {
+            webhook: {
+                url: 'YOUR_WEBHOOK_URL_HERE',
+                chatInputKey: 'chatInput',
+                sessionIdKey: 'sessionId',
+                responseKeys: ['message', 'content', 'text', 'response']
+            },
+            branding: {
+                logo: 'https://seoitright.co.uk/wp-content/uploads/2024/12/SEO-it-Right-02-scaled.jpg',
+                name: 'SEO it Right Chat',
+                welcomeText: 'Hi 👋, how can we help with your SEO needs today?',
+                responseTimeText: 'We typically respond right away'
+            },
+            style: {
+                primaryColor: '#3da5ae',
+                secondaryColor: '#001d4c',
+                position: 'right'
+            },
+            debug: true
+        };
+    </script>
+    
+    <!-- SEO it Right Chat Widget v6.1 -->
+    <script src="chat-widget-v6.1.js"></script>
+</body>
+</html>
