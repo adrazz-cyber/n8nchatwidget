@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO it Right Chat Widget V3 - Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #3da5ae;
+        }
+        .secondary-color {
+            color: #001d4c;
+        }
+        pre {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .logo {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://seoitright.co.uk/wp-content/uploads/2024/12/SEO-it-Right-02-scaled.jpg" alt="SEO it Right Ltd Logo" class="logo">
+        <h1>SEO it Right Ltd Chat Widget V3</h1>
+        <p>This page demonstrates the most compatible version of the SEO it Right Ltd chat widget. Click on the chat icon in the bottom corner to test it.</p>
+        
+        <h2>Widget Configuration</h2>
+        <pre><code>
+<!-- Widget Configuration --> 
+&lt;script&gt;
+    window.ChatWidgetConfig = {
+        webhook: {
+            url: 'YOUR_PRODUCTION_WEBHOOK_URL',
+            route: 'general'
+        },
+        branding: {
+            logo: 'https://seoitright.co.uk/wp-content/uploads/2024/12/SEO-it-Right-02-scaled.jpg',
+            name: 'SEO it Right Ltd',
+            welcomeText: 'Hi 👋, how can we help with your SEO needs today?',
+            responseTimeText: 'We typically respond right away'
+        },
+        style: {
+            primaryColor: '#3da5ae',
+            secondaryColor: '#001d4c',
+            position: 'right',
+            backgroundColor: '#ffffff',
+            fontColor: '#333333'
+        }
+    };
+&lt;/script&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/adrazz-cyber/n8nchatwidget@main/chat-widget-v3.js"&gt;&lt;/script&gt;
+        </code></pre>
+    </div>
+
+    <!-- Widget Configuration --> 
+    <script>
+        window.ChatWidgetConfig = {
+            webhook: {
+                url: 'https://n8n.srv833885.hstgr.cloud/webhook/b585c3ef-a838-4d84-b0c9-3f267675627e/chat',
+                route: 'general'
+            },
+            branding: {
+                logo: 'https://seoitright.co.uk/wp-content/uploads/2024/12/SEO-it-Right-02-scaled.jpg',
+                name: 'SEO it Right Ltd',
+                welcomeText: 'Hi 👋, how can we help with your SEO needs today?',
+                responseTimeText: 'We typically respond right away'
+            },
+            style: {
+                primaryColor: '#3da5ae',
+                secondaryColor: '#001d4c',
+                position: 'right',
+                backgroundColor: '#ffffff',
+                fontColor: '#333333'
+            }
+        };
+    </script>
+    <script src="chat-widget-v3.js"></script>
+</body>
+</html>
