@@ -1,0 +1,18 @@
+{
+  "name": "n8nchatwidget",
+  "version": "1.0.0",
+  "description": "A customizable chat widget for SEO it Right Ltd that integrates with n8n workflows",
+  "main": "chat-widget.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "chat",
+    "widget",
+    "n8n",
+    "SEO",
+    "SEO it Right"
+  ],
+  "author": "Adam @ SEO it Right Ltd",
+  "license": "MIT"
+}
